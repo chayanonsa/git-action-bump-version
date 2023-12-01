@@ -10,34 +10,34 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-    - name: Checkout Repository
-      uses: actions/checkout@v2
+      - name: Checkout Repository
+        uses: actions/checkout@v2
 
-    - name: Get latest tag
-      uses: actions-ecosystem/action-get-latest-tag@v1
-      id: get-latest-tag
+      - name: Get latest tag
+        uses: actions-ecosystem/action-get-latest-tag@v1
+        id: get-latest-tag
 
-    - name: Install semver-tool
-      run: |
-        curl -sSL https://github.com/fsaintjacques/semver-tool/archive/3.0.0.tar.gz | tar xvz
-        mv semver-tool-3.0.0/src/semver /usr/local/bin/
-        chmod +x /usr/local/bin/semver
+      - name: Install semver-tool
+        run: |
+          curl -sSL https://github.com/fsaintjacques/semver-tool/archive/3.0.0.tar.gz | tar xvz
+          mv semver-tool-3.0.0/src/semver /usr/local/bin/
+          chmod +x /usr/local/bin/semver
 
-    - name: Bump version with semver
-      id: semver
-      run: |
-        # Bump the version in your version file or other relevant files
-        new_version=$(/usr/local/bin/semver bump patch ${{ steps.get-latest-tag.outputs.tag }})
-        echo "New version is $new_version"
+      - name: Bump version with semver
+        id: semver
+        run: |
+          # Bump the version in your version file or other relevant files
+          new_version=$(/usr/local/bin/semver bump patch ${{ steps.get-latest-tag.outputs.tag }})
+          echo "New version is $new_version"
 
-        # Commit the changes
-        git config user.name "${{ github.actor }}"
-        git config user.email "${{ github.actor }}@users.noreply.github.com"
-        git add .  # Adjust the path as needed
-        git commit -m "Bump version to $new_version"
+      - name: Created tag
+        run: echo "tag ${{ steps.semver-tag.outputs.semver_tag }}"
 
-        # Push the changes back to the repository
-        git push origin main
+      - name: Push new tag
+        uses: actions-ecosystem/action-push-tag@v1
+        with:
+          tag: ${{ steps.bump-semver.outputs.new_version }}-dev
+          message: "${{ steps.bump-semver.outputs.new_version }}: PR #${{ github.event.pull_request.number }} ${{ github.event.pull_request.title }}"
 
-    - name: Display New Version
-      run: echo "New version is ${{ steps.semver.outputs.version }}"
+      - name: Display New Version
+        run: echo "New version is ${{ steps.semver.outputs.version }}"
