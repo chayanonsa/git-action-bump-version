@@ -38,7 +38,10 @@ jobs:
         uses: actions/checkout@v2
         with:
           token: ${{ secrets.PAT_TOKEN }}
+
+      - name: Run git push
         run: git push origin ${{ steps.bump-semver.outputs.semver_tag }}-dev
+
 
       - name: Display New Version
         run: echo "New version is ${{ steps.bump-semver.outputs.semver_tag }}-dev"
