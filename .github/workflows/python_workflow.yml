@@ -24,20 +24,21 @@ jobs:
           chmod +x /usr/local/bin/semver
 
       - name: Bump version with semver
-        id: semver
+        id: bump-semver
         run: |
           # Bump the version in your version file or other relevant files
           new_version=$(/usr/local/bin/semver bump patch ${{ steps.get-latest-tag.outputs.tag }})
           echo "New version is $new_version"
+          echo "::set-output name=semver_tag::${new_version}"
 
       - name: Created tag
-        run: echo "tag ${{ steps.semver-tag.outputs.semver_tag }}"
+        run: echo "tag ${{ steps.bump-semver.outputs.semver_tag }}"
 
       - name: Push new tag
         uses: actions-ecosystem/action-push-tag@v1
         with:
-          tag: ${{ steps.bump-semver.outputs.new_version }}-dev
-          message: "${{ steps.bump-semver.outputs.new_version }}: PR #${{ github.event.pull_request.number }} ${{ github.event.pull_request.title }}"
+          tag: ${{ steps.bump-semver.outputs.semver_tag }}-dev
+          message: "${{ steps.bump-semver.outputs.semver_tag }}: PR #${{ github.event.pull_request.number }} ${{ github.event.pull_request.title }}"
 
       - name: Display New Version
-        run: echo "New version is ${{ steps.semver.outputs.version }}"
+        run: echo "New version is ${{ steps.bump-semver.outputs.semver_tag }}-dev"
