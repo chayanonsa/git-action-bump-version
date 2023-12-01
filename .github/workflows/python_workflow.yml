@@ -35,10 +35,10 @@ jobs:
         run: echo "tag ${{ steps.bump-semver.outputs.semver_tag }}"
 
       - name: Push new tag
-        uses: actions-ecosystem/action-push-tag@v1
+        uses: actions/checkout@v2
         with:
-          tag: ${{ steps.bump-semver.outputs.semver_tag }}-dev
-          message: "${{ steps.bump-semver.outputs.semver_tag }}: PR #${{ github.event.pull_request.number }} ${{ github.event.pull_request.title }}"
+          token: ${{ secrets.PAT_TOKEN }}
+        run: git push origin ${{ steps.bump-semver.outputs.semver_tag }}-dev
 
       - name: Display New Version
         run: echo "New version is ${{ steps.bump-semver.outputs.semver_tag }}-dev"
