@@ -27,8 +27,8 @@ jobs:
       id: semver
       run: |
         # Bump the version in your version file or other relevant files
-        # new_version=$(semver bump patch $(semver get patch -c echo ${{ github.ref }} | cut -c 11-))
-        new_version=$(./semver bump patch ${{ steps.get-latest-tag.outputs.tag }})
+        new_version=$(semver bump patch $(semver get patch -c echo ${{ github.ref }} | cut -c 11-))
+        # new_version=$(./semver bump patch ${{ steps.get-latest-tag.outputs.tag }})
         echo "New version is $new_version"
 
         # Commit the changes
