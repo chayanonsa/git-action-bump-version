@@ -36,14 +36,15 @@ jobs:
       - name: Created tag
         run: echo "tag ${{ steps.bump-semver.outputs.semver_tag }}"
 
+      - name: Configure Git
+        run: |
+          git config user.name "GitHub Actions"
+          git config user.email "actions@github.com"
+
       - name: Push new tag
-        uses: actions/checkout@v2
-        with:
-          token: superKey
-
-      - name: Run git push
-        run: git push origin ${{ steps.bump-semver.outputs.semver_tag }}-dev
-
+        run: |
+          git tag -a ${{ steps.bump-semver.outputs.semver_tag }}-dev -m "${{ steps.bump-semver.outputs.semver_tag }}: PR #${{ github.event.pull_request.number }} ${{ github.event.pull_request.title }}"
+          git push origin ${{ steps.bump-semver.outputs.semver_tag }}-dev
 
       - name: Display New Version
         run: echo "New version is ${{ steps.bump-semver.outputs.semver_tag }}-dev"
