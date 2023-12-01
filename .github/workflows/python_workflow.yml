@@ -34,7 +34,7 @@ jobs:
 
     - name: Get version from semver-tool
       id: semver
-      run: echo "::set-output name=version::$(semver -c echo ${{GITHUB_REF#refs/tags/}})"
+      run: echo "::set-output name=version::$(semver -c echo ${{ github.ref }} | cut -c 11-)"
 
     - name: Display Semver version
       run: echo "Semver version is ${{ steps.semver.outputs.version }}"
