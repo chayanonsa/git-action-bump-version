@@ -1,4 +1,4 @@
-name: Python Workflow
+name: Python Workflow with Semver
 
 on:
   push:
@@ -25,3 +25,16 @@ jobs:
 
     - name: Run Python script
       run: python example.py
+
+    - name: Install semver-tool
+      run: |
+        curl -sSL https://github.com/fsaintjacques/semver-tool/archive/3.0.0.tar.gz | tar xvz
+        mv semver-tool-3.0.0/semver /usr/local/bin/
+        chmod +x /usr/local/bin/semver
+
+    - name: Get version from semver-tool
+      id: semver
+      run: echo "::set-output name=version::$(semver -c echo ${{GITHUB_REF#refs/tags/}})"
+
+    - name: Display Semver version
+      run: echo "Semver version is ${{ steps.semver.outputs.version }}"
