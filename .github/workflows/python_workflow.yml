@@ -13,6 +13,10 @@ jobs:
     - name: Checkout Repository
       uses: actions/checkout@v2
 
+    - name: Get latest tag
+      uses: actions-ecosystem/action-get-latest-tag@v1
+      id: get-latest-tag
+
     - name: Install semver-tool
       run: |
         curl -sSL https://github.com/fsaintjacques/semver-tool/archive/3.0.0.tar.gz | tar xvz
@@ -23,7 +27,8 @@ jobs:
       id: semver
       run: |
         # Bump the version in your version file or other relevant files
-        new_version=$(semver bump patch $(semver get patch -c echo ${{ github.ref }} | cut -c 11-))
+        # new_version=$(semver bump patch $(semver get patch -c echo ${{ github.ref }} | cut -c 11-))
+        new_version=$(./semver bump patch ${{ steps.get-latest-tag.outputs.tag }})
         echo "New version is $new_version"
 
         # Commit the changes
