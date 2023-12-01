@@ -33,6 +33,7 @@ jobs:
         # Commit the changes
         git config user.name "${{ github.actor }}"
         git config user.email "${{ github.actor }}@users.noreply.github.com"
+        git add .  # Adjust the path as needed
         git commit -m "Bump version to $new_version"
 
         # Push the changes back to the repository
